@@ -1,0 +1,9 @@
+# Load .env.development* files when running `wrangler dev`
+NEXTJS_ENV=development
+DATABASE_URL=database-url
+BETTER_AUTH_SECRET=secret
+BETTER_AUTH_URL=http://localhost:3000 #Base URL of your app
+
+# GOOGLE
+GOOGLE_CLIENT_ID=secret
+GOOGLE_CLIENT_SECRET=secret

@@ -1,13 +1,14 @@
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
 
-const app = new Hono().basePath('/api')
+// app/api/route.ts
+import { appRoutes } from '@/server'
 
-app.get('/hello', (c) => {
-  return c.json({
-    message: 'Hello Next.js!',
-  })
-})
+
+const app = appRoutes;
 
 export const GET = handle(app)
 export const POST = handle(app)
+export const PUT = handle(app)
+export const DELETE = handle(app)
+export const PATCH = handle(app)
