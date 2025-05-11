@@ -9,23 +9,22 @@ import { ac, admin, user } from '@/utils/auth';
 import { admin as adminPlugin, openAPI } from "better-auth/plugins";
 import db from '@/server/db';
 import { APP_CONFIG, ROLES } from '@/constants';
+import { accounts, sessions, users, verifications } from '@/server/db/schema';
 
 dotenv.config({
   path: ".dev.vars"
 })
 
 export const auth = betterAuth({
-  basePath: "/v1/auth",
-
   database: drizzleAdapter(db, {
     provider: "pg",
     usePlural: true,
-    // schema: {
-    //   users: users,
-    //   sessions: sessions,
-    //   accounts: accounts,
-    //   verifications: verifications,
-    // },
+    schema: {
+      users: users,
+      sessions: sessions,
+      accounts: accounts,
+      verifications: verifications,
+    },
   }),
 
   // EMAIL & PASSWORD

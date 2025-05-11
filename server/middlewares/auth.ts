@@ -4,7 +4,6 @@ import { Context, Next } from "hono";
 export default async (c: Context, next: Next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
-
   if (!session) {
     c.set("user", null);
     c.set("session", null);
