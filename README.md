@@ -124,53 +124,6 @@ Visit [http://localhost:3000](http://localhost:3000) to see the admin panel.
   </pre>
 </details>
 
-<details>
-  <summary>📁 `features/` - Domain-specific Components/Flows</summary>
-  <pre>
-  ├── course-editor/
-  ├── video-player/
-  ├── file-upload/
-  └── ...
-  </pre>
-</details>
-
-<details>
-  <summary>📁 `components/` - Reusable Components</summary>
-  <pre>
-  ├── ui/                            # Shadcnui components (buttons, inputs, modals, etc.)
-  ├── form/                          # Form components with `FieldWrapper`, `LabelArea`, `FieldError`, etc.
-  └── layout/                         # Layout components like Header, Sidebar, etc.
-  </pre>
-</details>
-
-<details>
-  <summary>📁 `tests/` - Tests</summary>
-  <pre>
-  ├── e2e/                            # End-to-end tests
-  ├── unit/                           # Unit tests
-  └── mocks/                          # Mock data for tests
-  </pre>
-</details>
-
-<details>
-  <summary>📁 `public/` - Static Assets</summary>
-  <pre>
-  └── (public assets like images, icons, etc.)
-  </pre>
-</details>
-
-<details>
-  <summary>Configuration Files</summary>
-  <pre>
-  ├── .env                           # Environment variables
-  ├── drizzle.config.ts              # Drizzle ORM CLI configuration
-  ├── tailwind.config.ts             # TailwindCSS configuration
-  ├── tsconfig.json                  # TypeScript configuration
-  ├── next.config.js                 # Next.js configuration
-  └── package.json                   # Project dependencies and scripts
-  </pre>
-</details>
-
 ---
 
 ## 📡 API (via Hono)
