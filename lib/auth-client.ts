@@ -1,12 +1,19 @@
 import {
   createAuthClient
 } from "better-auth/react";
-import { adminClient } from "better-auth/client/plugins"
+import { adminClient, inferAdditionalFields } from "better-auth/client/plugins"
+import dotenv from "dotenv"
 
 import { ac, admin, user } from '@/utils/auth';
+import { auth } from "./auth";
+
+
+dotenv.config({
+  path: ".dev.vars"
+})
 
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: "http://localhost:3000",
   plugins: [
     adminClient({
       ac,
@@ -14,7 +21,8 @@ export const authClient = createAuthClient({
         admin,
         user
       }
-    })
+    }),
+    inferAdditionalFields<typeof auth>()
   ]
 })
 

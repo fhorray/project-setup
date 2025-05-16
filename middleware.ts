@@ -1,45 +1,47 @@
-import { NextRequest, NextResponse } from "next/server"
-import { ROUTES, MAIN_URL } from "./routes"
+import { NextRequest, NextResponse } from "next/server";
+import { ROUTES, MAIN_URL } from "./routes";
 import { getSessionCookie } from "better-auth/cookies";
 import { APP_CONFIG } from "./constants";
 
-
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl
+  const { pathname } = request.nextUrl;
 
   const sessionCookie = getSessionCookie(request, {
-    cookiePrefix: APP_CONFIG.PREFIX
+    cookiePrefix: APP_CONFIG.PREFIX,
   });
 
-
+  // 1. Usuário não autenticado tentando acessar rota privada ou raiz
   if (!sessionCookie && !pathname.startsWith("/auth")) {
-    return NextResponse.redirect(new URL("/", request.url));
+    // Evita redirecionar para a própria rota e criar loop
+    if (pathname !== "/auth/sign-in") {
+      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+    }
   }
 
+  // 2. Usuário autenticado tentando acessar rota de autenticação
   if (sessionCookie && ROUTES.auth.includes(pathname)) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // if route if private and user is not authenticated, redirect to login.
+  // 3. Acesso a rota privada sem sessão
   if (ROUTES.private.includes(pathname) && !sessionCookie) {
-    return NextResponse.redirect(new URL('/auth/login', request.url))
+    if (pathname !== "/auth/login") {
+      return NextResponse.redirect(new URL("/auth/sign-in", request.url));
+    }
   }
 
-  // if route is public and user is authenticated redirect to dashboard.
+  // 4. Acesso a rota pública com sessão ativa
   if (ROUTES.public.includes(pathname) && sessionCookie) {
-    return NextResponse.redirect(new URL(MAIN_URL, request.url))
+    if (pathname !== MAIN_URL) {
+      return NextResponse.redirect(new URL(MAIN_URL, request.url));
+    }
   }
 
-  // if there's no problem, continue.
-  return NextResponse.next()
-};
-
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
+    '/((?!_next/|api/|trpc/|.*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
   ],
 };

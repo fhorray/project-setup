@@ -7,19 +7,22 @@ import corsMiddleware from "@/server/middlewares/cors";
 import csrfMiddleware from "@/server/middlewares/csrf";
 import { auth } from '@/lib/auth';
 
-export const appRoutes = new Hono<{
+export const app = new Hono<{
   Variables: Variables;
   Bindings: Bindings;
 }>().basePath('/api');
 
 // Middlwares
-appRoutes.use('*', corsMiddleware);
+app.use('*', corsMiddleware);
 
-appRoutes.on(["POST", "GET"], "/auth/**", (c) => auth.handler(c.req.raw));
-appRoutes.use('*', authMiddleware);
-// appRoutes.use('*', csrfMiddleware);
+app.on(["POST", "GET"], "/auth/**", (c) => auth.handler(c.req.raw));
+app.use('*', authMiddleware);
+// app.use('*', csrfMiddleware);
 
 // Routes
+app.get("/hello", async c => {
+  return c.json({ message: "Hello from next.js!" })
+})
 
 
-export default appRoutes;
+export default app;

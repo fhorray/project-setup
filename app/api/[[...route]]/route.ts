@@ -2,9 +2,7 @@ import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
 
 // app/api/route.ts
-import { appRoutes } from '@/server'
-
-const app = appRoutes;
+import app from '@/server'
 
 export const GET = handle(app);
 export const POST = handle(app);

@@ -1,45 +1,62 @@
 'use client';
 
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { authClient } from '@/lib/auth-client';
+
 import { ArrowRightIcon, LogOutIcon } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Home() {
-  const session = authClient.useSession().data;
+  const { data, isPending } = authClient.useSession();
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b bg-background">
         <div className="container mx-auto flex h-16 items-center justify-between">
           <div className="text-xl font-semibold">Auth System</div>
           <div className="flex items-center gap-4">
-            <Link href="/auth/sign-in">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link href="/auth/sign-up">
-              <Button>Sign Up</Button>
-            </Link>
-            {session?.session && (
-              <Button
-                size={'icon'}
-                variant={'outline'}
-                onClick={() => {
-                  authClient.signOut({
-                    fetchOptions: {
-                      onSuccess: () => {
-                        window.location.pathname = '/auth/sign-in';
+            {data?.session ? (
+              <>
+                <Avatar>
+                  <AvatarImage
+                    src={
+                      data.user.image ??
+                      `https://api.dicebear.com/6.x/initials/svg?seed=${data.user.name}`
+                    }
+                  />
+                </Avatar>
+                <Button
+                  size={'icon'}
+                  variant={'outline'}
+                  onClick={() => {
+                    authClient.signOut({
+                      fetchOptions: {
+                        onSuccess: () => {
+                          window.location.pathname = '/auth/sign-in';
+                        },
                       },
-                    },
-                  });
-                }}
-              >
-                <LogOutIcon />
-              </Button>
+                    });
+                  }}
+                >
+                  <LogOutIcon />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/auth/sign-in">
+                  <Button variant="ghost">Sign In</Button>
+                </Link>
+                <Link href="/auth/sign-up">
+                  <Button>Sign Up</Button>
+                </Link>
+              </>
             )}
           </div>
         </div>
       </header>
+
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container mx-auto grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">

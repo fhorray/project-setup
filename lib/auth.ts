@@ -16,6 +16,8 @@ dotenv.config({
 })
 
 export const auth = betterAuth({
+  baseURL: "http://localhost:3000",
+
   database: drizzleAdapter(db, {
     provider: "pg",
     usePlural: true,
@@ -67,6 +69,25 @@ export const auth = betterAuth({
     },
   },
 
+
+  // User COnfig
+  user: {
+    additionalFields: {
+      role: {
+        type: "string"
+      },
+      banned: {
+        type: "boolean"
+      },
+      banReason: {
+        type: "string"
+      },
+      banExpires: {
+        type: "date"
+      }
+    }
+  },
+
   plugins: [
     adminPlugin({
       adminRoles: [ROLES.Admin],
@@ -85,3 +106,4 @@ export const auth = betterAuth({
     // })
   ]
 });
+

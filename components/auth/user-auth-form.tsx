@@ -8,8 +8,6 @@ import { Button } from '@/components/ui/button';
 import { useAppForm } from '@/hooks/form-context';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
-import { FormError } from './form-error';
-import { FormSuccess } from './form-success';
 import { authClient } from '@/lib/auth-client';
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -56,18 +54,21 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
     onSubmit: async ({ value }) => {
       console.log(value);
 
-      console.log(value);
-
       if (type === 'login') {
-        // Simulate successful login
-        toast('Success', {
-          description: 'You have been logged in successfully!',
+        const { data, error } = await authClient.signIn.email(value, {
+          onRequest: (ctx) => {
+            setIsPending(true);
+          },
+          onSuccess: (ctx) => {
+            router.push('/dashboard');
+            toast('Success', {
+              description: 'You have been logged in successfully!',
+            });
+          },
+          onError: (ctx) => {
+            setError(true);
+          },
         });
-
-        // Redirect to dashboard or home page after successful login
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1500);
       } else {
         const values = value as RegisterFormValues;
         const { data, error } = await authClient.signUp.email(
@@ -81,20 +82,16 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
               setIsPending(true);
             },
             onSuccess: (ctx) => {
-              //redirect to the dashboard or sign in page
+              router.push('/dashboard');
+              toast('Registration Successful', {
+                description: 'Please check your email to verify your account.',
+              });
             },
             onError: (ctx) => {
-              // display the error message
               setError(true);
             },
           },
         );
-
-        // Simulate successful registration
-
-        toast('Registration Successful', {
-          description: 'Please check your email to verify your account.',
-        });
       }
     },
   });
@@ -116,7 +113,13 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           )}
           <form.AppField
             name="email"
-            children={(field) => <field.EmailField id="email" label="Email" />}
+            children={(field) => (
+              <field.EmailField
+                id="email"
+                label="Email"
+                placeholder="email@example.com"
+              />
+            )}
           />
 
           <form.AppField
@@ -154,9 +157,9 @@ export function UserAuthForm({ className, type, ...props }: UserAuthFormProps) {
           )}
         </div>
 
-        <div>
-          <Button type="submit">Submit</Button>
-        </div>
+        <Button className="w-full" type="submit">
+          Submit
+        </Button>
       </form>
     </div>
   );
